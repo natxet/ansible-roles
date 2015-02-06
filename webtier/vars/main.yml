@@ -1,0 +1,6 @@
+---
+
+git_user: gituser
+git_user_group: root
+git_user_home: /home/gituser
+php_ppa: php5-5.6

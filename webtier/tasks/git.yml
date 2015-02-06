@@ -1,0 +1,29 @@
+---
+
+- name: Latest version of Git package is installed
+  apt: pkg=git state=latest
+
+- name: Create Git user
+  user:
+    name: "{{ git_user }}"
+    comment: GitUser
+    home: "{{ git_user_home }}"
+    group: "{{ git_user_group }}"
+    generate_ssh_key: yes
+    state: present
+
+- name: Copy private ssh key
+  copy:
+    src: "{{ playbook_dir }}/files/id_rsa"
+    dest: "{{ git_user_home }}/.ssh/id_rsa"
+    owner: "{{ git_user }}"
+    group: "{{ git_user_group }}"
+    mode: 0644
+
+- name: Copy public ssh key
+  copy:
+    src: "{{ playbook_dir }}/files/id_rsa.pub"
+    dest: "{{ git_user_home }}/.ssh/id_rsa.pub"
+    owner: "{{ git_user }}"
+    group: "{{ git_user_group }}"
+    mode: 0644

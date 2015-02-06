@@ -1,0 +1,31 @@
+---
+
+- name: Add ppa Repository
+  apt_repository: repo=ppa:ondrej/{{ php_ppa }} state=present
+
+- name: All packages needed by PHP5 are installed in their latest version
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - libapache2-mod-php5
+    - php-apc
+    - php-pear
+    - php5
+    - php5-apcu
+    - php5-common
+    - php5-curl
+    - php5-dev
+    - php5-gd
+    - php5-imagick
+    - php5-imap
+    - php5-json
+    - php5-memcache
+    - php5-memcached
+    - php5-mysql
+  notify:
+    - ensure apache
+    - restart apache
+
+- name: ensure timezone is set in apache2 php.ini
+  lineinfile: dest=/etc/php5/apache2/php.ini
+              regexp='date.timezone ='
+              line='date.timezone = Europe/Madrid'

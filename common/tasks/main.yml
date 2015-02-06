@@ -1,0 +1,42 @@
+---
+
+- name: Update apt cache and all packages to the latest version
+  apt: upgrade=dist update_cache=yes cache_valid_time=43200
+
+- name: All needed packages are installed in their latest versions
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - build-essential
+    - chkrootkit
+    - cron
+    - curl
+    - gnupg
+    - htop
+    - keychain
+    - ntp
+    - psmisc
+    - rsync
+    - sendmail
+    - tree
+    - ufw
+    - vim
+    - wget
+    - zip
+
+- name: All system locales defined in vars.yml are present in the system
+  action: locale_gen name="{{ item }}.UTF-8" state=present
+  with_items: "{{ system_locales }}"
+
+- include: timezone.yml
+
+- name: ensure color is activated in bash
+  lineinfile: dest="{{ ssh_home }}/.bashrc"
+              regexp='force_color_prompt='
+              line='force_color_prompt=yes'
+
+- name: bash aliases file
+  copy:
+    src: bash_aliases
+    dest: "{{ ssh_home }}/.bash_aliases"
+    owner: "{{ ssh_user }}"
+    mode: 0644
