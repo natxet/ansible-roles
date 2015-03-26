@@ -4,15 +4,28 @@
   apt: pkg={{ item }} state=latest
   with_items:
     - python-mysqldb
-    - mysql-server-5.6
-    - mysql-client-5.6
-    - mysql-client-core-5.6
     - mysql-common
-    - mysql-common-5.6
-    - mysql-server-core-5.6
+    - mysql-server
+    - mysql-server-core
+    - mysql-client
   notify:
     - ensure mysql
     - restart mysql
+  when: "mysql_version != '5.6'"
+
+- name: All needed packages for MySQL are installed in their latest versions
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - python-mysqldb
+    - mysql-common-5.6
+    - mysql-server-5.6
+    - mysql-server-core-5.6
+    - mysql-client-5.6
+    - mysql-client-core-5.6
+  notify:
+    - ensure mysql
+    - restart mysql
+  when: "mysql_version == '5.6'"
 
 - name: MySQL root user´s password is reset to the one defined in vars/main.yml
   mysql_user:
