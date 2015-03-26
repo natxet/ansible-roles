@@ -1,6 +1,6 @@
 ---
 
-- name: All packages needed by webtier (not apache or php) are installed in their latest version
+- name: All packages needed by webtier (imagemagick, memcached and sendmail) are installed in their latest version
   action: apt pkg={{ item }} state=latest
   with_items:
     - imagemagick
