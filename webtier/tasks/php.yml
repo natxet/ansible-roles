@@ -1,8 +1,5 @@
 ---
 
-- name: Add ppa Repository
-  apt_repository: repo=ppa:ondrej/{{ php_ppa }} state=present
-
 - name: All packages needed by PHP5 are installed in their latest version
   apt: pkg={{ item }} state=latest
   with_items:
@@ -10,7 +7,7 @@
     - php-apc
     - php-pear
     - php5
-    - php5-apcu
+#    - php5-apcu
     - php5-common
     - php5-curl
     - php5-dev
@@ -18,12 +15,20 @@
     - php5-imagick
     - php5-imap
     - php5-json
-    - php5-memcache
     - php5-memcached
     - php5-mysql
   notify:
     - ensure apache
     - restart apache
+
+- name: APC user for PHP 5.6
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - php5-apcu
+  notify:
+    - ensure apache
+    - restart apache
+  when: "php_version == '5.6'"
 
 - name: ensure timezone is set in apache2 php.ini
   lineinfile: dest=/etc/php5/apache2/php.ini
